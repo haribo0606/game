@@ -60,6 +60,17 @@
                 }
             }
         }   
+        function drawSnake() { const colors = ["limegreen", "blue", "purple", "orange", "deeppink"];
+        const colorIndex = Math.floor(Date.now() / 500) % colors.length;
+        
+        for (let i = 0; i < snake.length; i++) {
+             if (i === 0) {
+                 drawTile(snake[i].x, snake[i].y, "green");
+                 } else { 
+                    drawTile(snake[i].x, snake[i].y, colors[colorIndex]); 
+                }
+             }
+             }
         function drawFood() {
             drawTile(food.x, food.y, "red");
         }
