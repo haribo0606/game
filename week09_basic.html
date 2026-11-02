@@ -19,7 +19,7 @@
 
 <body>
     <h1>Space Shooter</h1>
-    <p>점수: <span id="score">0</span> | 생명: <span id="life">3</span></p>
+    <p>최고 점수: <span id="highScore">0</span> | 점수: <span id="score">0</span> | 생명: <span id="life">3</span></p>
     <p>조작: ← / → 이동, Space 발사</p>
     <canvas id="gameCanvas" width="600" height="400"></canvas>
     <script>
@@ -28,10 +28,14 @@
 
         const scoreText = document.getElementById("score");
         const lifeText = document.getElementById("life");
+        const highScoreText = document.getElementById("highScore");
 
         let score = 0;
         let life = 3;
         let gameOver = false;
+        
+        let highScore = localStorage.getItem("spaceShooterHighScore") || 0;
+        highScoreText.textContent = highScore;
 
         const player = {
             x: 280,
@@ -170,26 +174,32 @@
             }
         }
 
-            function checkPlayerEnemyCollision(){
-                for(let i = enemies.length-1; i>=0; i--){
-                    const enemy = enemies[i];
-                    if(player.x < enemy.x + enemy.width &&
-                        player.x + player.width > enemy.x &&
-                        player.y < enemy.y + enemy.height &&
-                        player.y + player.height > enemy.y){
-                            enemies.splice(i, 1);
+        function checkPlayerEnemyCollision(){
+            for(let i = enemies.length-1; i>=0; i--){
+                const enemy = enemies[i];
+                if(player.x < enemy.x + enemy.width &&
+                    player.x + player.width > enemy.x &&
+                    player.y < enemy.y + enemy.height &&
+                    player.y + player.height > enemy.y){
+                        enemies.splice(i, 1);
 
-                            life--;
-                            lifeText.textContent = life;
-                            if(life<=0){
-                                endGame();
+                        life--;
+                        lifeText.textContent = life;
+                        if(life<=0){
+                            endGame();
                         }
-                    }
+                }
             }
         }
 
         function endGame() {
             gameOver = true;
+
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem("spaceShooterHighScore", highScore);
+                highScoreText.textContent = highScore;
+            }
 
             ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -200,7 +210,6 @@
 
             ctx.fillText("게임 오버!", canvas.width / 2, canvas.height / 2 - 20);
             ctx.fillText("최종 점수 : " + score, canvas.width / 2, canvas.height /2 + 30);
-
 
             alert("게임 오버!");
         }
@@ -229,7 +238,6 @@
         }, 900);
 
         gameLoop();
-
     </script>
 </body>
 </html>
